@@ -1,0 +1,11 @@
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/bin/Debug/net9.0/ClassLibrary.deps.json
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/bin/Debug/net9.0/ClassLibrary.dll
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/bin/Debug/net9.0/ClassLibrary.pdb
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/obj/Debug/net9.0/ClassLibrary.GeneratedMSBuildEditorConfig.editorconfig
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/obj/Debug/net9.0/ClassLibrary.AssemblyInfoInputs.cache
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/obj/Debug/net9.0/ClassLibrary.AssemblyInfo.cs
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/obj/Debug/net9.0/ClassLibrary.csproj.CoreCompileInputs.cache
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/obj/Debug/net9.0/ClassLibrary.dll
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/obj/Debug/net9.0/refint/ClassLibrary.dll
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/obj/Debug/net9.0/ClassLibrary.pdb
+/home/marabella/Desktop/CSharp/Labs/Lab1/ClassLibrary/obj/Debug/net9.0/ref/ClassLibrary.dll

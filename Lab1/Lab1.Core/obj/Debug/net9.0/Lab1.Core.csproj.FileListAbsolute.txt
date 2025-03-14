@@ -1,0 +1,11 @@
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/bin/Debug/net9.0/Lab1.Core.deps.json
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/bin/Debug/net9.0/Lab1.Core.dll
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/bin/Debug/net9.0/Lab1.Core.pdb
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/obj/Debug/net9.0/Lab1.Core.GeneratedMSBuildEditorConfig.editorconfig
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/obj/Debug/net9.0/Lab1.Core.AssemblyInfoInputs.cache
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/obj/Debug/net9.0/Lab1.Core.AssemblyInfo.cs
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/obj/Debug/net9.0/Lab1.Core.csproj.CoreCompileInputs.cache
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/obj/Debug/net9.0/Lab1.Core.dll
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/obj/Debug/net9.0/refint/Lab1.Core.dll
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/obj/Debug/net9.0/Lab1.Core.pdb
+/home/marabella/Desktop/CSharp/Labs/Lab1/Lab1.Core/obj/Debug/net9.0/ref/Lab1.Core.dll
