@@ -2,6 +2,7 @@ namespace Lab1.Core.Models;
 
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.Reflection;
 
 /// <summary>
 /// Represents an abstract base class that provides validation logic for derived classes.
@@ -67,20 +68,48 @@ public abstract class ValidatableObject
     }
 }
 
-
-public static class TestValidator
+public static class ValidatorHelper
 {
-    /// <summary>
-    /// Validates a single property of the object.
-    /// </summary>
-    /// <typeparam name="T">The type of the property.</typeparam>
-    /// <param name="propertyName">The name of the property to validate.</param>
-    /// <param name="value">The value of the property to validate.</param>
-    /// <exception cref="ValidationException">Thrown when the property value is invalid.</exception>
-    public static void ValidateProperty<T>(string propertyName, T value)
+    // Method for object validation
+    public static void ValidateObject<T>(T obj)
     {
+        if (obj == null)
+        {
+            throw new ArgumentNullException(nameof(obj));
+        }
+
+        // Getting properties that belong only to the current class (not inherited)
+        var properties = GetNonInheritedProperties(typeof(T));
+
+        // Validating each property
+        foreach (var property in properties)
+        {
+            // Getting the property value
+            var value = property.GetValue(obj);
+
+            // Validating the property value
+            ValidateProperty(obj, property.Name, value);
+        }
+
+        Console.WriteLine("Validation succeeded.");
+    }
+
+    public static void SetValueWithValidation<T, K>(T obj, ref K field, string propertyName, K value)
+    {
+        ValidateProperty(obj, propertyName, value); // Validation
+        field = value; // Assignment
+    }
+
+    // Method for validating a single property
+    private static void ValidateProperty<T, K>(T obj, string propertyName, K value)
+    {
+        if (obj == null)
+        {
+            throw new ArgumentNullException(nameof(obj));
+        }
+
         var validationResults = new List<ValidationResult>();
-        var context = new ValidationContext(this) { MemberName = propertyName };
+        var context = new ValidationContext(obj) { MemberName = propertyName };
 
         bool isValid = Validator.TryValidateProperty(value, context, validationResults);
 
@@ -94,102 +123,27 @@ public static class TestValidator
         }
     }
 
-    /// <summary>
-    /// Validates the entire object.
-    /// </summary>
-    /// <exception cref="ValidationException">Thrown when the object fails validation.</exception>
-    public static void ValidateObject()
-    {
-        var validationResults = new List<ValidationResult>();
-        var context = new ValidationContext(this);
-
-        bool isValid = Validator.TryValidateObject(this, context, validationResults, true); // 'true' validates all properties
-
-        if (!isValid)
-        {
-            foreach (var validationResult in validationResults)
-            {
-                Console.WriteLine(validationResult.ErrorMessage);
-            }
-            throw new ValidationException("Object validation failed.");
-        }
-    }
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// Sets a property value with validation.
-    /// </summary>
-    /// <typeparam name="T">The type of the property.</typeparam>
-    /// <param name="field">The backing field to set the value for.</param>
-    /// <param name="propertyName">The name of the property.</param>
-    /// <param name="value">The value to assign to the property.</param>
-    public static void SetValueWithValidation<T>(ref T field, string propertyName, T value)
-    {
-        ValidateProperty(propertyName, value); // Validation
-        field = value; // Assignment
-    }
-}
-
-
-
-
-public static class ValidatorHelper
-{
-    // Метод для валидации объекта
-    public static void ValidateObject<T>(T obj)
-    {
-        if (obj == null)
-            throw new ArgumentNullException(nameof(obj));
-
-        // Получаем свойства, которые принадлежат только текущему классу (не унаследованные)
-        var properties = GetNonInheritedProperties(typeof(T));
-
-        // Создаем контекст валидации
-        var context = new ValidationContext(obj);
-        var validationResults = new List<ValidationResult>();
-
-        // Валидируем каждое свойство
-        foreach (var property in properties)
-        {
-            // Получаем значение свойства
-            var value = property.GetValue(obj);
-
-            // Валидируем значение свойства
-            bool isValid = Validator.TryValidateProperty(value, new ValidationContext(obj) { MemberName = property.Name }, validationResults);
-
-            if (!isValid)
-            {
-                foreach (var validationResult in validationResults)
-                {
-                    Console.WriteLine(validationResult.ErrorMessage);
-                }
-                throw new ValidationException($"Validation failed for property '{property.Name}'.");
-            }
-        }
-
-        Console.WriteLine("Validation succeeded.");
-    }
-
-    // Метод для получения свойств, которые не унаследованы от базового класса
     public static IEnumerable<PropertyInfo> GetNonInheritedProperties(Type type)
     {
         if (type == null)
+        {
             throw new ArgumentNullException(nameof(type));
+        }
 
-        // Получаем все свойства текущего класса
+        // Getting all the properties of the current class
         var allProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
-        // Получаем все свойства базового класса
+        // Getting all the properties of the base class
         var baseProperties = type.BaseType?.GetProperties(BindingFlags.Public | BindingFlags.Instance) ?? Array.Empty<PropertyInfo>();
 
-        // Исключаем свойства, которые есть в базовом классе
-        var nonInheritedProperties = allProperties.Where(p => !baseProperties.Any(bp => bp.Name == p.Name && bp.PropertyType == p.PropertyType));
+        // We exclude properties that are in the base class
+        var nonInheritedProperties = allProperties.Where(p =>
+        {
+            // Exclude indexers (properties with parameters)
+            bool isIndexer = p.GetIndexParameters().Any();
+            
+            return !isIndexer && !baseProperties.Any(bp => bp.Name == p.Name && bp.PropertyType == p.PropertyType);
+        });
 
         return nonInheritedProperties;
     }

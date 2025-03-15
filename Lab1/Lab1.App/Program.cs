@@ -11,13 +11,13 @@ Workshop workshop = new Workshop(
     workerCount: 1200,
     productList: new List<string>
     {
-        // "Engine Blocks",
+        "Engine Blocks",
         // "Transmission Systems",
         // "Brake Discs",
         // "Suspension Components",
         // "Electric Vehicle Batteries"
     },
-    id: 0,
+    id: 1,
     new List<Brigade> {
         new Brigade(1, "Alpha"),
         new Brigade(2, "Bronson"),

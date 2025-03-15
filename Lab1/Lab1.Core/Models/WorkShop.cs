@@ -18,7 +18,7 @@ public class Workshop : Production
     public List<Brigade> Brigades
     {
         get => _brigades;
-        set => SetValueWithValidation(ref _brigades, nameof(Brigades), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _brigades, nameof(Brigades), value); // Validation and assignment
     }
 
     //! SHIFTS
@@ -28,7 +28,7 @@ public class Workshop : Production
     public List<Shift> Shifts
     {
         get => _shifts;
-        set => SetValueWithValidation(ref _shifts, nameof(Shifts), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _shifts, nameof(Shifts), value); // Validation and assignment
     }
 
     //! SCHEDULE
@@ -38,7 +38,7 @@ public class Workshop : Production
     public List<ScheduleElement> Schedule
     {
         get => _schedule;
-        set => SetValueWithValidation(ref _schedule, nameof(Schedule), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _schedule, nameof(Schedule), value); // Validation and assignment
     }
 
     public Workshop(string name, 
@@ -52,10 +52,13 @@ public class Workshop : Production
         : base(name, manager, workerCount, productList)
     {
         _id = id;
-        ValidateProperty(nameof(Id), id); // ID Validation
-        Brigades = brigades;
-        Shifts = shifts;
-        Schedule = schedule;
+        _brigades = brigades;
+        _shifts = shifts;
+        _schedule = schedule;
+
+        
+
+        ValidatorHelper.ValidateObject(this);
     }
 
     /// <summary>

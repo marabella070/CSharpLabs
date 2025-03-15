@@ -15,7 +15,7 @@ public abstract class Production
     public string Name
     {
         get => _name;
-        set => TestValidator.SetValueWithValidation(ref _name, nameof(Name), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _name, nameof(Name), value); // Validation and assignment
     }
 
     //! MANAGER
@@ -25,7 +25,7 @@ public abstract class Production
     public string Manager
     {
         get => _manager;
-        set => TestValidator.SetValueWithValidation(ref _manager, nameof(Manager), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _manager, nameof(Manager), value); // Validation and assignment
     }
 
     //! WORKER_COUNT
@@ -35,7 +35,7 @@ public abstract class Production
     public uint WorkerCount
     {
         get => _workerCount;
-        set => TestValidator.SetValueWithValidation(ref _workerCount, nameof(WorkerCount), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _workerCount, nameof(WorkerCount), value); // Validation and assignment
     }
 
     //! PRODUCT_LIST
@@ -45,27 +45,22 @@ public abstract class Production
     public List<string> ProductList
     {
         get => _productList;
-        set => TestValidator.SetValueWithValidation(ref _productList, nameof(ProductList), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _productList, nameof(ProductList), value); // Validation and assignment
     }
 
     public Production(string name, string manager, uint workerCount, List<string> productList)
     {
-        // Name = name;
-        // Manager = manager;
-        // WorkerCount = workerCount;
-        // ProductList = productList;
-
         _name = name;
         _manager = manager;
         _workerCount = workerCount;
         _productList = productList;
         
-        Console.WriteLine("I'm cooked");
-        ((Production)this).ValidateObject();
-        Console.WriteLine("I'm NOT cooked");
+
+        ValidatorHelper.ValidateObject(this);
     }
 
     // Indexer for accessing the product list by index
+    // In C#, indexers do not support validation attributes directly like regular properties.
     public string this[int index]
     {
         get
