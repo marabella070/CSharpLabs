@@ -53,13 +53,13 @@ public static class StandardSchedules
         {
             new Shift(new TimeSpan(0, 0, 0), new TimeSpan(8, 0, 0)),    /*Night shift*/
             new Shift(new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0)),   /*Day shift*/
-            new Shift(new TimeSpan(16, 0, 0), new TimeSpan(24, 0, 0)),  /*Evening shift*/
+            new Shift(new TimeSpan(16, 0, 0), new TimeSpan(0, 0, 0)),  /*Evening shift*/
         },
         new List<ScheduleElement>
         {
             new ScheduleElement(2, 3, new Shift(new TimeSpan(0, 0, 0), new TimeSpan(8, 0, 0))),    /* 2 days night shift, 3 days rest */
             new ScheduleElement(2, 2, new Shift(new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0))),   /* 2 days day shift, 2 days rest */
-            new ScheduleElement(2, 1, new Shift(new TimeSpan(16, 0, 0), new TimeSpan(24, 0, 0))),  /* 2 days evening shift, 1 day of rest */
+            new ScheduleElement(2, 1, new Shift(new TimeSpan(16, 0, 0), new TimeSpan(0, 0, 0))),  /* 2 days evening shift, 1 day of rest */
         }
     );
 }

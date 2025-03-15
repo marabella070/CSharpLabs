@@ -1,39 +1,61 @@
-using System.Text;
-
 namespace Lab1.Core.Models;
+
+using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 public class Workshop : Production
 {
-    public int Id { get; set; }
-    public List<Brigade> Brigades { get; set; }
-    public List<Shift> Shifts { get; set; }
-    public List<ScheduleElement> Schedule { get; set; }
+    //! ID
+    private readonly uint _id;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Workshop"/> class.
-    /// </summary>
-    /// <param name="name">The name of the workshop.</param>
-    /// <param name="manager">The manager of the workshop.</param>
-    /// <param name="workerCount">The number of workers in the workshop.</param>
-    /// <param name="productList">The list of products produced by the workshop.</param>
-    /// <param name="id">The unique identifier of the workshop.</param>
-    /// <param name="brigades">The list of brigades. If not provided, an empty list is used.</param>
-    /// <param name="shifts">The list of shifts. If not provided, an empty list is used.</param>
-    /// <param name="schedule">The list of schedule elements. If not provided, an empty list is used.</param>
+    [Range(1, uint.MaxValue, ErrorMessage = "ID must be greater than zero.")]
+    public uint Id => _id;
+
+    //! BRIGADES
+    private List<Brigade> _brigades;
+
+    [MinLength(1, ErrorMessage = "Brigades must contain at least one brigade.")]
+    public List<Brigade> Brigades
+    {
+        get => _brigades;
+        set => SetValueWithValidation(ref _brigades, nameof(Brigades), value); // Validation and assignment
+    }
+
+    //! SHIFTS
+    private List<Shift> _shifts;
+
+    [MinLength(1, ErrorMessage = "Shifts must contain at least one shift.")]
+    public List<Shift> Shifts
+    {
+        get => _shifts;
+        set => SetValueWithValidation(ref _shifts, nameof(Shifts), value); // Validation and assignment
+    }
+
+    //! SCHEDULE
+    private List<ScheduleElement> _schedule;
+
+    [MinLength(1, ErrorMessage = "Schedule must contain at least one schedule element.")]
+    public List<ScheduleElement> Schedule
+    {
+        get => _schedule;
+        set => SetValueWithValidation(ref _schedule, nameof(Schedule), value); // Validation and assignment
+    }
+
     public Workshop(string name, 
                     string manager, 
                     uint workerCount, 
-                    HashSet<string> productList, 
-                    int id,  
+                    List<string> productList, 
+                    uint id,  
                     List<Brigade> brigades,
                     List<Shift> shifts,
                     List<ScheduleElement> schedule)
         : base(name, manager, workerCount, productList)
     {
-        Id = id;
-        Brigades = new List<Brigade>(brigades ?? throw new ArgumentNullException(nameof(brigades)));
-        Shifts = new List<Shift>(shifts ?? throw new ArgumentNullException(nameof(shifts)));
-        Schedule = new List<ScheduleElement>(schedule ?? throw new ArgumentNullException(nameof(schedule)));
+        _id = id;
+        ValidateProperty(nameof(Id), id); // ID Validation
+        Brigades = brigades;
+        Shifts = shifts;
+        Schedule = schedule;
     }
 
     /// <summary>
@@ -77,7 +99,7 @@ public class Workshop : Production
     /// <summary>
     /// Prints the schedule in a tabular format to the console.
     /// </summary>
-    public void PrintSchedule()
+    public void ShowSchedule(Action<string> output)
     {
         const int brigadeCellWidth = 14;
         const int daysCellWidth = 4;
@@ -89,12 +111,12 @@ public class Workshop : Production
 
         if (brigadeMap == null)
         {
-            Console.WriteLine("Failed to generate schedule.");
+            output("Failed to generate schedule.");
             return;
         }
 
         // Output of the dividing line
-        Console.WriteLine(dividingLine);
+        output(dividingLine + "\n");
 
         // Table header output
         Console.Write($"{"| days", -daysCellWidth} | ");
@@ -104,7 +126,7 @@ public class Workshop : Production
         }
 
         // Output of the dividing line
-        Console.WriteLine("\n" + dividingLine);
+        output("\n" + dividingLine + "\n");
 
         // Output of table rows
         for (int day = 0; day < cycleLength; ++day)
@@ -124,11 +146,11 @@ public class Workshop : Production
                     Console.Write($"{"Empty",-brigadeCellWidth} | ");
                 }
             }
-            Console.WriteLine();
+            output("\n");
         }
 
         // Output of the dividing line
-        Console.WriteLine(dividingLine);
+        output(dividingLine + "\n");
     }
 
     /// <summary>
@@ -152,8 +174,8 @@ public class Workshop : Production
 
         var brigadeMap = new Dictionary<(int, Shift), Brigade>();
 
-        int currentDay = 0;
-        int dayShift = Schedule[0].WorkDays;
+        uint currentDay = 0;
+        uint dayShift = Schedule[0].WorkDays;
 
         // Sorting through teams and schedule elements
         foreach (var brigade in Brigades)
@@ -161,7 +183,7 @@ public class Workshop : Production
             foreach (var scheduleElement in Schedule)
             {
                 // Assignment of working days
-                foreach (var day in Enumerable.Range(currentDay, scheduleElement.WorkDays))
+                foreach (var day in Enumerable.Range((int)currentDay, (int)scheduleElement.WorkDays))
                 {
                     int keyDay = day % cycleLength;
                     brigadeMap[(keyDay, scheduleElement.Shift)] = brigade;
@@ -179,6 +201,6 @@ public class Workshop : Production
     /// <returns>The total length of the schedule cycle in days.</returns>
     private int CalculateScheduleLength()
     {
-        return Schedule?.Sum(element => element.WorkDays + element.RelaxDays) ?? 0;
+        return Schedule?.Sum(element => (int)(element.WorkDays + element.RelaxDays)) ?? 0;
     }
 }

@@ -9,15 +9,15 @@ Workshop workshop = new Workshop(
     name: "Global AutoWorks",
     manager: "Michael Reynolds",
     workerCount: 1200,
-    productList: new HashSet<string>
+    productList: new List<string>
     {
-        "Engine Blocks",
-        "Transmission Systems",
-        "Brake Discs",
-        "Suspension Components",
-        "Electric Vehicle Batteries"
+        // "Engine Blocks",
+        // "Transmission Systems",
+        // "Brake Discs",
+        // "Suspension Components",
+        // "Electric Vehicle Batteries"
     },
-    id: 1,
+    id: 0,
     new List<Brigade> {
         new Brigade(1, "Alpha"),
         new Brigade(2, "Bronson"),
@@ -29,9 +29,8 @@ Workshop workshop = new Workshop(
     schedule: scheduleElements
 );
 
+workshop.ShowProductionInfo(Console.Write);
 
-workshop.ShowProductionInfo(Console.WriteLine);
+workshop.ShowWorkshopInfo(Console.Write);
 
-workshop.ShowWorkshopInfo(Console.WriteLine);
-
-workshop.PrintSchedule();
+workshop.ShowSchedule(Console.Write);

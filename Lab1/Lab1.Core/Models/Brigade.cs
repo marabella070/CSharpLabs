@@ -1,34 +1,39 @@
 namespace Lab1.Core.Models;
 
+using System.ComponentModel.DataAnnotations;
+
 /// <summary>
 /// Represents a brigade with an ID and a name.
 /// </summary>
-public struct Brigade
+public class Brigade : ValidatableObject
 {
-    
+    //! ID
+    private readonly uint _id;
 
+    [Range(1, uint.MaxValue, ErrorMessage = "ID must be greater than zero.")]
+    public uint Id => _id;
 
+    //! NAME
+    private string _name;
 
-    public int Id { get; }
-
-
-    public string Name { get; }
+    [Required(ErrorMessage = "Name is required.")] // Name cannot be null or empty.
+    public string Name
+    {
+        get => _name;
+        set => SetValueWithValidation(ref _name, nameof(Name), value); // Validation and assignment
+    }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Brigade"/> structure.
+    /// Initializes a new instance of the <see cref="Brigade"/> class.
     /// </summary>
-    /// <param name="id">The unique ID of the brigade.</param>
+    /// <param name="id">The unique identifier of the brigade.</param>
     /// <param name="name">The name of the brigade.</param>
-    /// <exception cref="ArgumentException">Thrown when the name is null or empty.</exception>
-    public Brigade(int id, string name)
+    public Brigade(uint id, string name)
     {
-        if (string.IsNullOrEmpty(name))
-        {
-            throw new ArgumentException("Name cannot be null or empty.", nameof(name));
-        }
+        _id = id;
+        _name = name;
 
-        Id = id;
-        Name = name;
+        ValidateObject();
     }
 
     /// <summary>

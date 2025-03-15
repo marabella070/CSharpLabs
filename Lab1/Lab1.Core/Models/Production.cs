@@ -1,179 +1,153 @@
-﻿using System.Text;
+﻿namespace Lab1.Core.Models;
 
-namespace Lab1.Core.Models;
+using System.Text;
+using System.ComponentModel.DataAnnotations;
 
-/// <summary>
-/// Represents an abstract production entity.
-/// </summary>
 public abstract class Production
 {
-    private readonly ISpecification<string> _nameSpecification = StandardSpecifications.NonEmptyString();
-    private readonly ISpecification<string> _managerSpecification = StandardSpecifications.NonEmptyString();
-    private readonly ISpecification<ICollection<string>> _productionListSpecification = StandardSpecifications.AllNonEmptyStrings();
+    const uint MAX_EMPLOYEES_NUMBER = 10_000;
 
-    // NAME
+    //! NAME
     private string _name;
-    public string Name => _name;
-    public void SetName(string value)
+    
+    [Required(ErrorMessage = "Name is required.")] // Name cannot be null or empty.
+    [StringLength(100, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 100 characters.")]
+    public string Name
     {
-        Set<string>(_nameSpecification, out _name, value);
-    }
-    public bool TrySetName(string value, out string errorMessage)
-    {
-        return TrySet<string>(_nameSpecification, ref _name, value, out errorMessage);
+        get => _name;
+        set => TestValidator.SetValueWithValidation(ref _name, nameof(Name), value); // Validation and assignment
     }
 
-    // MANAGER
+    //! MANAGER
     private string _manager;
-    public string Manager => _manager;
-    public void SetManager(string value)
+
+    [Required(ErrorMessage = "Manager is required.")] // Manager cannot be null or empty.
+    public string Manager
     {
-        Set<string>(_managerSpecification, out _manager, value);
-    }
-    public bool TrySetManager(string value, out string errorMessage)
-    {
-        return TrySet<string>(_managerSpecification, ref _manager, value, out errorMessage);
+        get => _manager;
+        set => TestValidator.SetValueWithValidation(ref _manager, nameof(Manager), value); // Validation and assignment
     }
 
-    // WORKER COUNT
+    //! WORKER_COUNT
     private uint _workerCount;
-    public uint WorkerCount { get; set; }
 
-    // PRODUCT_LIST
-    private HashSet<string> _productList;
-    public HashSet<string> ProductList => _productList;
-
-    public void SetProductList(HashSet<string> value)
+    [Range(1, MAX_EMPLOYEES_NUMBER, ErrorMessage = "WorkerCount must be greater than 0.")]
+    public uint WorkerCount
     {
-        Set<ICollection<string>>(_productionListSpecification, out _productList, value);
-    }
-    public bool TrySetProductList(HashSet<string> value, out string errorMessage)
-    {
-        return TrySet<ICollection<string>>(_productionListSpecification, ref _productList, value, out errorMessage);
+        get => _workerCount;
+        set => TestValidator.SetValueWithValidation(ref _workerCount, nameof(WorkerCount), value); // Validation and assignment
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Production"/> class with the specified parameters.
-    /// Validates the input values using predefined specifications and sets the corresponding fields.
-    /// </summary>
-    /// <param name="name">The name of the production. Must not be null or empty.</param>
-    /// <param name="manager">The name of the production manager. Must not be null or empty.</param>
-    /// <param name="workerCount">The number of workers in the production.</param>
-    /// <param name="productList">The list of manufactured products. Must not be null, empty, or contain null or empty items.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="name"/>, <paramref name="manager"/>, or <paramref name="productList"/> fails validation.
-    /// </exception>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="productList"/> is null.</exception>
-    protected Production(string name, string manager, uint workerCount, HashSet<string> productList)
+    //! PRODUCT_LIST
+    private List<string> _productList;
+
+    [MinLength(1, ErrorMessage = "ProductList must contain at least one product.")]
+    public List<string> ProductList
     {
-        // Setting values with verification
-        Set<string>(_nameSpecification, out _name, name);
-        Set<string>(_managerSpecification, out _manager, manager);
+        get => _productList;
+        set => TestValidator.SetValueWithValidation(ref _productList, nameof(ProductList), value); // Validation and assignment
+    }
+
+    public Production(string name, string manager, uint workerCount, List<string> productList)
+    {
+        // Name = name;
+        // Manager = manager;
+        // WorkerCount = workerCount;
+        // ProductList = productList;
+
+        _name = name;
+        _manager = manager;
         _workerCount = workerCount;
-        Set<HashSet<string>>(_productionListSpecification, out _productList, productList);
+        _productList = productList;
+        
+        Console.WriteLine("I'm cooked");
+        ((Production)this).ValidateObject();
+        Console.WriteLine("I'm NOT cooked");
     }
 
-    /// <summary>
-    /// Adds a product to the product list.
-    /// </summary>
-    /// <param name="product">The name of the product to add.</param>
-    /// <exception cref="ArgumentException">Thrown if the product name is null or empty.</exception>
+    // Indexer for accessing the product list by index
+    public string this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _productList.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+            }
+
+            return _productList[index];
+        }
+        set
+        {
+            if (index < 0 || index >= _productList.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+            }
+
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("Product name cannot be null or empty.");
+            }
+
+            _productList[index] = value;
+        }
+    }
+
+    // Attempt to add a product without throwing exceptions
+    public bool TryAddProduct(string product)
+    {
+        if (IsInvalidProduct(product))
+        {
+            return false; // The product is not added if it is invalid
+        }
+
+        _productList.Add(product);
+        return true;
+    }
+
+    // Add a product with an exception if the operation is not successful
     public void AddProduct(string product)
     {
-        if (string.IsNullOrEmpty(product))
+        if (!TryAddProduct(product))
         {
-            throw new ArgumentException("Product name cannot be null or empty.");
+            throw new ArgumentException("Product name cannot be null, empty, or a duplicate.");
         }
-        ProductList.Add(product);
     }
 
-    /// <summary>
-    /// Removes a product from the product list.
-    /// </summary>
-    /// <param name="product">The name of the product to remove.</param>
-    /// <returns>True if the product was removed; otherwise, false.</returns>
     public bool RemoveProduct(string product)
     {
         return ProductList.Remove(product);
     }
 
-    /// <summary>
-    /// Generates a string with production details.
-    /// </summary>
-    /// <returns>A formatted string containing production information.</returns>
     public string GetProductionInfo()
     {
         var sb = new StringBuilder();
         sb.AppendLine($"Production: {Name}");
         sb.AppendLine($"Manager: {Manager}");
         sb.AppendLine($"Number of workers: {WorkerCount}");
-        sb.Append(FormatList(ProductList, "The list of the nomenclature of manufactured products:", item => $" - {item}"));
+        sb.Append(GetProductionList());
 
         return sb.ToString();
     }
 
-    /// <summary>
-    /// Displays production information using the provided output method.
-    /// </summary>
-    /// <param name="output">A delegate to handle the output (e.g., console, file).</param>
     public void ShowProductionInfo(Action<string> output)
     {
         string info = GetProductionInfo();
         output(info); // passing the output string
     }
 
-    // AUXILIARY METHODS
-
-    /// <summary>
-    /// Sets a value to a variable after validating it against the provided specification.
-    /// If the value does not satisfy the specification, an <see cref="ArgumentException"/> is thrown.
-    /// </summary>
-    /// <typeparam name="T">The type of the value to be set.</typeparam>
-    /// <param name="specification">The specification used to validate the value.</param>
-    /// <param name="_variable">The variable to which the value will be assigned.</param>
-    /// <param name="value">The value to be validated and set.</param>
-    /// <exception cref="ArgumentException">Thrown if the value does not satisfy the specification.</exception>
-    private void Set<T>(ISpecification<T> specification, out T _variable, T value)
+    public virtual string GetProductionList()
     {
-        if (!specification.IsSatisfiedBy(value))
-        {
-            throw new ArgumentException(specification.ErrorMessage);
-        }
-
-        _variable = value;
+        return FormatList(ProductList, "The list of the nomenclature of manufactured products:", item => $" - {item}");
     }
 
-    /// <summary>
-    /// Attempts to set a value to a variable after validating it against the provided specification.
-    /// If the value does not satisfy the specification, the method returns false and provides an error message.
-    /// </summary>
-    /// <typeparam name="T">The type of the value to be set.</typeparam>
-    /// <param name="specification">The specification used to validate the value.</param>
-    /// <param name="_variable">The variable to which the value will be assigned.</param>
-    /// <param name="value">The value to be validated and set.</param>
-    /// <param name="errorMessage">The error message if the validation fails.</param>
-    /// <returns>True if the value satisfies the specification and is successfully set; otherwise, false.</returns>
-    private bool TrySet<T>(ISpecification<T> specification, ref T _variable, T value, out string errorMessage)
+    public virtual void ShowProductionList(Action<string> output)
     {
-        if (!specification.IsSatisfiedBy(value))
-        {
-            errorMessage = specification.ErrorMessage;
-            return false;
-        }
-
-        _variable = value;
-        errorMessage = string.Empty;
-        return true;
+        string list = GetProductionList();
+        output(list);
     }
 
-    /// <summary>
-    /// Formats a list of items into a readable string with a title.
-    /// </summary>
-    /// <typeparam name="T">The type of items in the list.</typeparam>
-    /// <param name="list">The list of items to format.</param>
-    /// <param name="title">The title to display above the list.</param>
-    /// <param name="formatItem">A function to format each item.</param>
-    /// <returns>A formatted string representation of the list.</returns>
+    //! AUXILIARY METHODS
     protected string FormatList<T>(IEnumerable<T> list, string title, Func<T, string> formatItem)
     {
         var sb = new StringBuilder();
@@ -192,5 +166,11 @@ public abstract class Production
         }
 
         return sb.ToString();
+    }
+
+    // Checking for an acceptable product
+    private bool IsInvalidProduct(string product)
+    {
+        return string.IsNullOrEmpty(product) || _productList.Contains(product);
     }
 }

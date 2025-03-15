@@ -1,13 +1,35 @@
 namespace Lab1.Core.Models;
 
+using System.ComponentModel.DataAnnotations;
+
 /// <summary>
 /// Represents a schedule element containing work days, relaxation days, and a shift.
 /// </summary>
-public struct ScheduleElement
+public class ScheduleElement : ValidatableObject
 {
-    public int WorkDays { get; }
-    public int RelaxDays { get; }
-    public Shift Shift { get; }
+    //! WORK_DAYS
+    private uint _workDays;
+
+    [Range(1, uint.MaxValue , ErrorMessage = "WorkDays must be greater than 0.")]
+    public uint WorkDays
+    {
+        get => _workDays;
+        set => SetValueWithValidation(ref _workDays, nameof(WorkDays), value); // Validation and assignment
+    }
+
+    //! RELAX_DAYS
+    private uint _relaxDays;
+
+    [Range(1, uint.MaxValue , ErrorMessage = "RelaxDays must be greater than 0.")]
+    public uint RelaxDays
+    {
+        get => _relaxDays;
+        set => SetValueWithValidation(ref _relaxDays, nameof(RelaxDays), value); // Validation and assignment
+    }
+
+    //! SHIFT
+    private readonly Shift _shift;
+    public Shift Shift => _shift;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ScheduleElement"/> class.
@@ -15,11 +37,13 @@ public struct ScheduleElement
     /// <param name="workDays">The number of work days.</param>
     /// <param name="relaxDays">The number of relaxation days.</param>
     /// <param name="shift">The shift associated with the work days.</param>
-    public ScheduleElement(int workDays, int relaxDays, Shift shift)
+    public ScheduleElement(uint workDays, uint relaxDays, Shift shift)
     {
-        WorkDays = workDays;
-        RelaxDays = relaxDays;
-        Shift = shift;
+        _workDays = workDays;
+        _relaxDays = relaxDays;
+        _shift = shift;
+
+        ValidateObject();
     }
 
     /// <summary>
