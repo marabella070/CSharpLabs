@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 /// <summary>
 /// Represents a work shift with a start time, end time, and duration.
 /// </summary>
-public class Shift : ValidatableObject
+public class Shift
 {
     //! START_TIME
     private readonly TimeSpan _startTime;
@@ -34,7 +34,7 @@ public class Shift : ValidatableObject
         _startTime = startTime;
         _endTime = endTime;
 
-        ValidateObject();
+        ValidatorHelper.ValidateObject(this);
     }
 
     /// <summary>

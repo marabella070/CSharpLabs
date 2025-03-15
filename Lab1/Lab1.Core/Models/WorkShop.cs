@@ -56,8 +56,6 @@ public class Workshop : Production
         _shifts = shifts;
         _schedule = schedule;
 
-        
-
         ValidatorHelper.ValidateObject(this);
     }
 
@@ -122,10 +120,10 @@ public class Workshop : Production
         output(dividingLine + "\n");
 
         // Table header output
-        Console.Write($"{"| days", -daysCellWidth} | ");
+        output($"| {"days", -daysCellWidth} | ");
         foreach (var shift in Shifts)
         {
-            Console.Write($"{shift, -brigadeCellWidth} | ");
+            output($"{shift, -brigadeCellWidth} | ");
         }
 
         // Output of the dividing line
@@ -134,7 +132,7 @@ public class Workshop : Production
         // Output of table rows
         for (int day = 0; day < cycleLength; ++day)
         {
-            Console.Write($"| {day + 1, -daysCellWidth} | ");
+            output($"| {day + 1, -daysCellWidth} | ");
             foreach (var shift in Shifts)
             {
                 var key = (day, shift);
@@ -142,11 +140,11 @@ public class Workshop : Production
                 // Checking whether a team has been assigned to a shift
                 if (brigadeMap.TryGetValue(key, out var foundBrigade))
                 {
-                    Console.Write($"{foundBrigade.Name,-brigadeCellWidth} | ");
+                    output($"{foundBrigade.Name,-brigadeCellWidth} | ");
                 }
                 else
                 {
-                    Console.Write($"{"Empty",-brigadeCellWidth} | ");
+                    output($"{"Empty",-brigadeCellWidth} | ");
                 }
             }
             output("\n");

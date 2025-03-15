@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 /// <summary>
 /// Represents a schedule element containing work days, relaxation days, and a shift.
 /// </summary>
-public class ScheduleElement : ValidatableObject
+public class ScheduleElement
 {
     //! WORK_DAYS
     private uint _workDays;
@@ -14,7 +14,7 @@ public class ScheduleElement : ValidatableObject
     public uint WorkDays
     {
         get => _workDays;
-        set => SetValueWithValidation(ref _workDays, nameof(WorkDays), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _workDays, nameof(WorkDays), value); // Validation and assignment
     }
 
     //! RELAX_DAYS
@@ -24,7 +24,7 @@ public class ScheduleElement : ValidatableObject
     public uint RelaxDays
     {
         get => _relaxDays;
-        set => SetValueWithValidation(ref _relaxDays, nameof(RelaxDays), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _relaxDays, nameof(RelaxDays), value); // Validation and assignment
     }
 
     //! SHIFT
@@ -43,7 +43,7 @@ public class ScheduleElement : ValidatableObject
         _relaxDays = relaxDays;
         _shift = shift;
 
-        ValidateObject();
+        ValidatorHelper.ValidateObject(this);
     }
 
     /// <summary>

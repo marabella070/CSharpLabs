@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 /// <summary>
 /// Represents a brigade with an ID and a name.
 /// </summary>
-public class Brigade : ValidatableObject
+public class Brigade
 {
     //! ID
     private readonly uint _id;
@@ -20,7 +20,7 @@ public class Brigade : ValidatableObject
     public string Name
     {
         get => _name;
-        set => SetValueWithValidation(ref _name, nameof(Name), value); // Validation and assignment
+        set => ValidatorHelper.SetValueWithValidation(this, ref _name, nameof(Name), value); // Validation and assignment
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class Brigade : ValidatableObject
         _id = id;
         _name = name;
 
-        ValidateObject();
+        ValidatorHelper.ValidateObject(this);
     }
 
     /// <summary>

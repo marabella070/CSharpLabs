@@ -12,10 +12,10 @@ Workshop workshop = new Workshop(
     productList: new List<string>
     {
         "Engine Blocks",
-        // "Transmission Systems",
-        // "Brake Discs",
-        // "Suspension Components",
-        // "Electric Vehicle Batteries"
+        "Transmission Systems",
+        "Brake Discs",
+        "Suspension Components",
+        "Electric Vehicle Batteries"
     },
     id: 1,
     new List<Brigade> {

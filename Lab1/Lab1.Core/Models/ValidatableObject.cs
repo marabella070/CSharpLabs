@@ -4,70 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Reflection;
 
-/// <summary>
-/// Represents an abstract base class that provides validation logic for derived classes.
-/// </summary>
-public abstract class ValidatableObject
-{
-    /// <summary>
-    /// Validates a single property of the object.
-    /// </summary>
-    /// <typeparam name="T">The type of the property.</typeparam>
-    /// <param name="propertyName">The name of the property to validate.</param>
-    /// <param name="value">The value of the property to validate.</param>
-    /// <exception cref="ValidationException">Thrown when the property value is invalid.</exception>
-    protected void ValidateProperty<T>(string propertyName, T value)
-    {
-        var validationResults = new List<ValidationResult>();
-        var context = new ValidationContext(this) { MemberName = propertyName };
-
-        bool isValid = Validator.TryValidateProperty(value, context, validationResults);
-
-        if (!isValid)
-        {
-            foreach (var result in validationResults)
-            {
-                Console.WriteLine(result.ErrorMessage);
-            }
-            throw new ValidationException($"Invalid value for '{propertyName}'.");
-        }
-    }
-
-    /// <summary>
-    /// Validates the entire object.
-    /// </summary>
-    /// <exception cref="ValidationException">Thrown when the object fails validation.</exception>
-    protected void ValidateObject()
-    {
-        var validationResults = new List<ValidationResult>();
-        var context = new ValidationContext(this);
-
-        bool isValid = Validator.TryValidateObject(this, context, validationResults, true); // 'true' validates all properties
-
-        if (!isValid)
-        {
-            foreach (var validationResult in validationResults)
-            {
-                Console.WriteLine(validationResult.ErrorMessage);
-            }
-            throw new ValidationException("Object validation failed.");
-        }
-    }
-
-    /// <summary>
-    /// Sets a property value with validation.
-    /// </summary>
-    /// <typeparam name="T">The type of the property.</typeparam>
-    /// <param name="field">The backing field to set the value for.</param>
-    /// <param name="propertyName">The name of the property.</param>
-    /// <param name="value">The value to assign to the property.</param>
-    protected void SetValueWithValidation<T>(ref T field, string propertyName, T value)
-    {
-        ValidateProperty(propertyName, value); // Validation
-        field = value; // Assignment
-    }
-}
-
 public static class ValidatorHelper
 {
     // Method for object validation
@@ -90,8 +26,6 @@ public static class ValidatorHelper
             // Validating the property value
             ValidateProperty(obj, property.Name, value);
         }
-
-        Console.WriteLine("Validation succeeded.");
     }
 
     public static void SetValueWithValidation<T, K>(T obj, ref K field, string propertyName, K value)
@@ -115,11 +49,14 @@ public static class ValidatorHelper
 
         if (!isValid)
         {
-            foreach (var result in validationResults)
-            {
-                Console.WriteLine(result.ErrorMessage);
-            }
-            throw new ValidationException($"Invalid value for '{propertyName}'.");
+            // Combining all error messages into one line
+            string errorMessages = string.Join(Environment.NewLine, validationResults.Select(r => r.ErrorMessage));
+
+            // Creating a general error message
+            string errorMessage = $"Invalid value for '{propertyName}'. Errors:{Environment.NewLine}{errorMessages}";
+
+            // Throwing an exception with a combined message
+            throw new ValidationException(errorMessage);
         }
     }
 
