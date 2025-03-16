@@ -55,7 +55,6 @@ public abstract class Production
         _workerCount = workerCount;
         _productList = productList;
         
-
         ValidatorHelper.ValidateObject(this);
     }
 
@@ -119,24 +118,24 @@ public abstract class Production
         var sb = new StringBuilder();
         sb.AppendLine($"Production: {Name}");
         sb.AppendLine($"Manager: {Manager}");
-        sb.AppendLine($"Number of workers: {WorkerCount}");
+        sb.AppendLine($"Number of workers: {WorkerCount}\n");
         sb.Append(GetProductionList());
 
         return sb.ToString();
     }
 
-    public void ShowProductionInfo(Action<string> output)
+    public virtual void ShowInfo(Action<string> output)
     {
         string info = GetProductionInfo();
         output(info); // passing the output string
     }
 
-    public virtual string GetProductionList()
+    public string GetProductionList()
     {
         return FormatList(ProductList, "The list of the nomenclature of manufactured products:", item => $" - {item}");
     }
 
-    public virtual void ShowProductionList(Action<string> output)
+    public void ShowProductionList(Action<string> output)
     {
         string list = GetProductionList();
         output(list);

@@ -29,8 +29,8 @@ Workshop workshop = new Workshop(
     schedule: scheduleElements
 );
 
-workshop.ShowProductionInfo(Console.Write);
+workshop.ShowInfo(Console.Write);
 
-workshop.ShowWorkshopInfo(Console.Write);
+Console.WriteLine();
 
 workshop.ShowSchedule(Console.Write);

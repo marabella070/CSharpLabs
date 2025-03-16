@@ -74,9 +74,11 @@ public class Workshop : Production
 
         // Formatting information about brigades
         sb.Append(FormatList(Brigades, "Brigades:", brigade => $" - Brigade {brigade.Id}: {brigade.Name}"));
+        sb.AppendLine();
 
         // Formatting information about shifts
         sb.Append(FormatList(Shifts, "Shifts:", shift => $" - {shift}"));
+        sb.AppendLine();
 
         // Formatting the schedule information
         sb.Append(FormatList(Schedule, "Schedule:", scheduleElement => $" - {scheduleElement}"));
@@ -91,10 +93,10 @@ public class Workshop : Production
     /// <remarks>
     /// This method calls <see cref="GetWorkshopInfo"/> to generate the information string and then passes it to the <paramref name="output"/> delegate.
     /// </remarks>
-    public void ShowWorkshopInfo(Action<string> output)
+    public override void ShowInfo(Action<string> output)
     {
-        string info = GetWorkshopInfo();
-        output(info); // passing the output string
+        base.ShowInfo(output);
+        output("\n" + GetWorkshopInfo());
     }
 
     /// <summary>
