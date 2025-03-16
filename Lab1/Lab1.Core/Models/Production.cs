@@ -1,9 +1,11 @@
 ﻿namespace Lab1.Core.Models;
 
+using Lab1.Core.Interfaces;
+using Lab1.Core.Helpers;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
 
-public abstract class Production
+public abstract class Production : IDisplayable
 {
     const uint MAX_EMPLOYEES_NUMBER = 10_000;
 

@@ -1,9 +1,11 @@
 namespace Lab1.Core.Models;
 
+using Lab1.Core.Helpers;
+using Lab1.Core.Interfaces;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
 
-public class Workshop : Production
+public class Workshop : Production, IIdentifiable
 {
     //! ID
     private readonly uint _id;

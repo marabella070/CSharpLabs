@@ -1,4 +1,4 @@
-namespace Lab1.Core.Models;
+namespace Lab1.Core.Helpers;
 
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;

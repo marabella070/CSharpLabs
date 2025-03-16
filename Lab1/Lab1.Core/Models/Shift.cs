@@ -1,5 +1,6 @@
 namespace Lab1.Core.Models;
 
+using Lab1.Core.Helpers;
 using System.ComponentModel.DataAnnotations;
 
 /// <summary>
