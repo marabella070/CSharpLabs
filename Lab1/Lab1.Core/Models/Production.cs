@@ -1,7 +1,8 @@
 ﻿namespace Lab1.Core.Models;
 
-using Lab1.Core.Interfaces;
 using Lab1.Core.Helpers;
+using Lab1.Core.Exceptions;
+using Lab1.Core.Interfaces;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
 
@@ -68,7 +69,7 @@ public abstract class Production : IDisplayable
         {
             if (index < 0 || index >= _productList.Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+                throw new ProductOutOfRangeException("Index is out of range.");
             }
 
             return _productList[index];
@@ -77,12 +78,12 @@ public abstract class Production : IDisplayable
         {
             if (index < 0 || index >= _productList.Count)
             {
-                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+                throw new ProductOutOfRangeException("Index is out of range.");
             }
 
             if (string.IsNullOrEmpty(value))
             {
-                throw new ArgumentException("Product name cannot be null or empty.");
+                throw new InvalidProductException("Product name cannot be null or empty.");
             }
 
             _productList[index] = value;
@@ -106,7 +107,7 @@ public abstract class Production : IDisplayable
     {
         if (!TryAddProduct(product))
         {
-            throw new ArgumentException("Product name cannot be null, empty, or a duplicate.");
+            throw new InvalidProductException("Product name cannot be null, empty, or a duplicate.");
         }
     }
 
