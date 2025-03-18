@@ -101,6 +101,13 @@ public class Workshop : Production, IIdentifiable
         output("\n" + GetWorkshopInfo());
     }
 
+    public override string ToString()
+    {
+        string productionPart = GetProductionInfo();
+        string workshopPart = GetWorkshopInfo();
+        return productionPart + "\n" + workshopPart;
+    }
+
     /// <summary>
     /// Prints the schedule in a tabular format to the console.
     /// </summary>

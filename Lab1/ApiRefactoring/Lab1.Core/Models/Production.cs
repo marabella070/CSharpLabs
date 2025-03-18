@@ -133,6 +133,11 @@ public abstract class Production : IDisplayable
         output(info); // passing the output string
     }
 
+    public override string ToString()
+    {
+        return GetProductionInfo();
+    }
+
     public string GetProductionList()
     {
         return FormatList(ProductList, "The list of the nomenclature of manufactured products:", item => $" - {item}");
